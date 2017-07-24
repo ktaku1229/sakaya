@@ -1,15 +1,8 @@
+import java.util.ArrayList;
+import java.util.List;
 
 public class TicketList {
 
-	private Ticket ticket;
-
-	public Ticket getTicket() {
-		return ticket;
-	}
-
-	public void setTicket(Ticket ticket) {
-		this.ticket = ticket;
-	}
-
+	public List<Ticket> ticket=new ArrayList<Ticket>();
 
 }
