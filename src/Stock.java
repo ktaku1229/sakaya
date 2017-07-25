@@ -11,5 +11,4 @@ public class Stock {
 	public void setStock(Drink drink) {
 		this.stock.add(drink);
 	}
-
 }

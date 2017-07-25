@@ -396,9 +396,6 @@ public class OrderMain extends JDialog {
 			contentPanel.add(btnNewButton);
 			btnNewButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					for(int i=0; i<list.order.size();i++){
-						System.out.println(list.order.get(i).getNumber());
-					}
 					brand.clear();
 					num.clear();
 					contentPanel.setVisible(false);
