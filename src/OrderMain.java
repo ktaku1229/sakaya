@@ -11,6 +11,10 @@ import javax.swing.SwingConstants;
 import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,10 +44,28 @@ public class OrderMain extends JDialog {
 	public static void main(String[] args) {
 
 
-		Drink d = new Drink();
-		d.setBrand("aaa");
-		 d.setNum(12);
-		 s. setStock(d);
+		try{
+		      BufferedReader br = new BufferedReader( new FileReader("src/zaiko.txt") );
+		      String str;
+
+		      String zaiko[];
+
+		      while( (str = br.readLine()) != null ) {
+		    	  zaiko = str.split(",");
+		    	  Drink d = new Drink();
+		    	  d.setBrand(zaiko[0]);
+		    	  d.setNum(Integer.parseInt(zaiko[1]));
+		    	  s.setStock(d);
+		      }
+
+		      br.close();
+		    }catch(FileNotFoundException e){
+		      System.out.println("ファイルが存在しません.");
+		    }catch(IOException e){
+		      System.out.println("ファイルを読み込めませんでした.");
+		    }catch(NumberFormatException e){
+		    	System.out.println("ファイルの形式が正しくありません.");
+		    }
 
 		try {
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

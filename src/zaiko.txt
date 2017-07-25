@@ -1,3 +1,2 @@
+asahi,10
 mio,5
-kakubin,7
-strong0,3
