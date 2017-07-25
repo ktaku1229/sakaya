@@ -1,14 +1,15 @@
+import java.util.ArrayList;
 
 public class Stock {
 
-	private Drink stock;
+	private ArrayList<Drink> stock = new ArrayList<Drink>();
 
-	public Drink getStock() {
+	public ArrayList<Drink> getStock() {
 		return stock;
 	}
 
-	public void setStock(Drink stock) {
-		this.stock = stock;
+	public void setStock(Drink drink) {
+		this.stock.add(drink);
 	}
 
 }

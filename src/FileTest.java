@@ -11,25 +11,27 @@ class FileTest{
       //File file = new File("/home/ensyum/m171X205/Documents/workspace/sakaya/src/zaiko.txt");
       //File file = new File("src/zaiko.txt");
 
-      BufferedReader br
-      = new BufferedReader( new FileReader("src/zaiko.txt") );
+      BufferedReader br = new BufferedReader( new FileReader("src/zaiko.txt") );
       String s;
 
-      String zaiko[][] = null;
-      Arrays.fill(zaiko, 0);
-      int ch;
-      
-      int i=0;
+      String zaiko[];
+
       while( (s = br.readLine()) != null ) {
-    	  zaiko[i] = s.split("");
+    	  zaiko = s.split(",");
+    	  Drink d = new Drink();
+    	  d.setBrand(zaiko[0]);
+    	  d.setNum(Integer.parseInt(zaiko[1]));
+    	  System.out.println(d.getBrand());
+    	  System.out.println(d.getNum());
       }
-      System.out.println(zaiko[1][0]);
 
       br.close();
     }catch(FileNotFoundException e){
       System.out.println(e);
     }catch(IOException e){
       System.out.println(e);
+    }catch(NumberFormatException e){
+    	System.out.println(e);
     }
   }
 }

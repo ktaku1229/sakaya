@@ -19,13 +19,13 @@ import javax.swing.Action;
 public class OrderMain extends JDialog {
 	private JTextField textField;
 	private JTextField textField2;
-	
+
 	OrderList list = new OrderList();
-	
+
 	private static String name;
 	private static ArrayList<String> brand = new ArrayList<String>();
 	private static ArrayList<Integer> num = new ArrayList<Integer>();
-	private static ArrayList<Stock> l = new ArrayList<Stock>();
+	private static Stock s = new Stock();
 
 	static OrderMain dialog = new OrderMain(0);
 	static OrderMain dialog1 = new OrderMain(1);
@@ -38,13 +38,13 @@ public class OrderMain extends JDialog {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		
-		 Stock s = new Stock();
+
+
 		Drink d = new Drink();
 		d.setBrand("aaa");
 		 d.setNum(12);
 		 s. setStock(d);
-		l.add(s);
+
 		try {
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
@@ -283,16 +283,16 @@ public class OrderMain extends JDialog {
 				}
 			}
 			JButton btnNewButton = new JButton("はい");
-			btnNewButton.setBounds(6, 200, 50, 29);
+			btnNewButton.setBounds(6, 200, 80, 29);
 			contentPanel.add(btnNewButton);
 			btnNewButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					int flag=0;
 					for(int i=0; i<brand.size(); i++){
 						flag=0;
-						for(int j=0; j<l.size(); j++){
-							if(l.get(j).getStock().getBrand().equals(brand.get(i))){
-								if(l.get(j).getStock().getNum()>=num.get(i)){
+						for(int j=0; j<s.getStock().size(); j++){
+							if(s.getStock().get(j).getBrand().equals(brand.get(i))){
+								if(s.getStock().get(j).getNum()>=num.get(i)){
 									flag = 1;
 								}
 							}
@@ -329,7 +329,7 @@ public class OrderMain extends JDialog {
 				}
 			});
 			JButton btn2 = new JButton("注文をし直す");
-			btn2.setBounds(50, 200, 117, 29);
+			btn2.setBounds(100, 200, 117, 29);
 			contentPanel.add(btn2);
 			btn2.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -364,7 +364,7 @@ public class OrderMain extends JDialog {
 					String a = brand.get(i);
 					int b = num.get(i);
 				JLabel lblNewLabel = new JLabel(a +  "-" + b);
-				
+
 				lblNewLabel.setBounds(6, 80+i*20, 438, 16);
 				contentPanel.add(lblNewLabel);
 				}
