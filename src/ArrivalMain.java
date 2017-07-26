@@ -23,6 +23,7 @@ public class ArrivalMain extends JDialog {
 
 	static File file = new File("src/zaiko.txt");
 	static File tlFile = new File("src/ticket.txt");
+	static File orderFile = new File("src/order.txt");
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textField;
 	static OrderList list = new OrderList();
@@ -91,6 +92,35 @@ public class ArrivalMain extends JDialog {
 	      	System.out.println("ファイルの形式が正しくありません.");
 	      }
 
+		try{
+	        BufferedReader br = new BufferedReader( new FileReader(orderFile) );
+	        String str;
+
+	        String tmp[];
+
+	        while( (str = br.readLine()) != null ) {
+	      	  tmp = str.split(",");
+	      	  Order order = new Order();
+	      	  order.setNumber(Integer.parseInt(tmp[0]));
+	      	  Customer customer = new Customer();
+	      	  customer.setName(tmp[1]);
+	      	  order.setCustomer(customer);
+	      	  Drink d = new Drink();
+	      	  d.setBrand(tmp[2]);
+	      	  d.setNum(Integer.parseInt(tmp[3]));
+	      	  order.setDrink(d);
+	      	  list.order.add(order);
+	        }
+
+	        br.close();
+	      }catch(FileNotFoundException e){
+	        System.out.println("ファイルが存在しません.");
+	      }catch(IOException e){
+	        System.out.println("ファイルを読み込めませんでした.");
+	      }catch(NumberFormatException e){
+	      	System.out.println("ファイルの形式が正しくありません.");
+	      }
+/*
 		Drink drink = new Drink();
 		Order order = new Order();
 		Customer customer = new Customer();
@@ -117,6 +147,8 @@ public class ArrivalMain extends JDialog {
 		order3.setCustomer(customer);
 		order3.setNumber(2);
 		list.order.add(order3);
+
+		*/
 		try {
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
@@ -226,13 +258,13 @@ public class ArrivalMain extends JDialog {
 							list.order.remove(i);
 							Ticket ticket = createTicket(number ,customer, drink);
 							decreaseStock(drink);
-							writeStock();
 							ticketList.ticket.add(ticket);
-							writeTicketList();
 							i--;
 						}
 					}
-					System.out.println(list.order.size());
+					writeStock();
+					writeTicketList();
+					writeOrderList();
 
 					contentPanel.setVisible(false);
 					createPanel(3);
@@ -352,12 +384,6 @@ public class ArrivalMain extends JDialog {
 	    	if(!file.exists()){
 	    		file.createNewFile();
 	    	}
-	/*
-	    	Drink d = new Drink();
-	    	d.setBrand("asahi");
-	    	d.setNum(10);
-	    	s.setStock(d);
-	*/
 
 	    	BufferedWriter bw = new BufferedWriter(new FileWriter(file));
 	    	ArrayList<Drink> list = s.getStock();
@@ -371,7 +397,6 @@ public class ArrivalMain extends JDialog {
 
 	    	bw.close();
 
-
 	    }catch(FileNotFoundException e){
 	        System.out.println("ファイルが存在しません.");
 	      }catch(IOException e){
@@ -384,20 +409,6 @@ public class ArrivalMain extends JDialog {
 		    	if(!tlFile.exists()){
 		    		tlFile.createNewFile();
 		    	}
-		/*
-		    	Customer c = new Customer();
-		    	c.setName("藤崎");
-		    	Drink d = new Drink();
-		    	d.setBrand("mio");
-		    	d.setNum(5);
-
-		    	Ticket t = new Ticket();
-		    	t.setNumber(1);
-		    	t.setCustomer(c);
-		    	t.setDrink(d);
-
-		    	tl.ticket.add(t);
-		*/
 
 		    	BufferedWriter bw2 = new BufferedWriter(new FileWriter(tlFile));
 		    	List<Ticket> tl = ticketList.ticket;
@@ -418,5 +429,30 @@ public class ArrivalMain extends JDialog {
 		        System.out.println("ファイルに書き込めませんでした.");
 		      }
 
+	}
+
+	public void writeOrderList(){
+		try{
+	    	if(!orderFile.exists()){
+	    		orderFile.createNewFile();
+	    	}
+
+	    	BufferedWriter bw2 = new BufferedWriter(new FileWriter(orderFile));
+	    	List<Order> orderList = list.order;
+
+	    	for(int i=0; i<orderList.size(); i++){
+	    		String tmp;
+	    		tmp = orderList.get(i).getNumber() + "," + orderList.get(i).getCustomer().getName() + "," + orderList.get(i).getDrink().getBrand() + "," + orderList.get(i).getDrink().getNum();
+	    		bw2.write(tmp);
+	    		bw2.newLine();
+	    	}
+
+	    	bw2.close();
+
+	    }catch(FileNotFoundException e){
+	        System.out.println("ファイルが存在しません.");
+	      }catch(IOException e){
+	        System.out.println("ファイルに書き込めませんでした.");
+	      }
 	}
 }

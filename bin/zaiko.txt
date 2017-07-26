@@ -1,2 +1,2 @@
-mio,20
-asahi,15
+mio,10
+asahi,10
