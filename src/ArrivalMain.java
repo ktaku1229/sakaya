@@ -2,6 +2,15 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -12,10 +21,14 @@ import javax.swing.border.EmptyBorder;
 
 public class ArrivalMain extends JDialog {
 
+	static File file = new File("src/zaiko.txt");
+	static File tlFile = new File("src/ticket.txt");
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textField;
 	static OrderList list = new OrderList();
 	static TicketList ticketList = new TicketList();
+
+	private static Stock s = new Stock();
 
 	static ArrivalMain dialog = new ArrivalMain(0);
 
@@ -23,6 +36,61 @@ public class ArrivalMain extends JDialog {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+
+		try{
+		      BufferedReader br = new BufferedReader( new FileReader(file) );
+		      String str;
+
+		      String zaiko[];
+		      ArrayList<Drink> stock = new ArrayList<Drink>();
+
+		      while( (str = br.readLine()) != null ) {
+		    	  zaiko = str.split(",");
+		    	  Drink d = new Drink();
+		    	  d.setBrand(zaiko[0]);
+		    	  d.setNum(Integer.parseInt(zaiko[1]));
+		    	  stock.add(d);
+		      }
+		      s.setStock(stock);
+
+		      br.close();
+		    }catch(FileNotFoundException e){
+		      System.out.println("ファイルが存在しません.");
+		    }catch(IOException e){
+		      System.out.println("ファイルを読み込めませんでした.");
+		    }catch(NumberFormatException e){
+		    	System.out.println("ファイルの形式が正しくありません.");
+		    }
+
+		try{
+	        BufferedReader br2 = new BufferedReader( new FileReader(tlFile) );
+	        String str2;
+
+	        String ticket[];
+
+	        while( (str2 = br2.readLine()) != null ) {
+	      	  ticket = str2.split(",");
+	      	  Ticket t = new Ticket();
+	      	  t.setNumber(Integer.parseInt(ticket[0]));
+	      	  Customer customer = new Customer();
+	      	  customer.setName(ticket[1]);
+	      	  t.setCustomer(customer);
+	      	  Drink d = new Drink();
+	      	  d.setBrand(ticket[2]);
+	      	  d.setNum(Integer.parseInt(ticket[3]));
+	      	  t.setDrink(d);
+	      	  ticketList.ticket.add(t);
+	        }
+
+	        br2.close();
+	      }catch(FileNotFoundException e){
+	        System.out.println("ファイルが存在しません.");
+	      }catch(IOException e){
+	        System.out.println("ファイルを読み込めませんでした.");
+	      }catch(NumberFormatException e){
+	      	System.out.println("ファイルの形式が正しくありません.");
+	      }
+
 		Drink drink = new Drink();
 		Order order = new Order();
 		Customer customer = new Customer();
@@ -35,7 +103,7 @@ public class ArrivalMain extends JDialog {
 		list.order.add(order);
 		Drink drink2 = new Drink();
 		Order order2 = new Order();
-		drink2.setBrand("super dry");
+		drink2.setBrand("asahi");
 		drink2.setNum(5);
 		order2.setDrink(drink2);
 		order2.setCustomer(customer);
@@ -43,7 +111,7 @@ public class ArrivalMain extends JDialog {
 		list.order.add(order2);
 		Drink drink3 = new Drink();
 		Order order3 = new Order();
-		drink3.setBrand("super dry");
+		drink3.setBrand("asahi");
 		drink3.setNum(10);
 		order3.setDrink(drink3);
 		order3.setCustomer(customer);
@@ -128,7 +196,7 @@ public class ArrivalMain extends JDialog {
 			JLabel lblNewLabel_1 = new JLabel("注文番号:" + textField.getText());
 			lblNewLabel_1.setBounds(10, 60, 450, 16);
 			contentPanel.add(lblNewLabel_1);
-			
+
 			int count=0;
 			for(int i=0; i<list.order.size(); i++){
 				if(list.order.get(i).getNumber() == (Integer.parseInt(textField.getText()))){
@@ -144,7 +212,7 @@ public class ArrivalMain extends JDialog {
 					count++;
 				}
 			}
-			
+
 			JButton btnNewButton = new JButton("OK");
 			btnNewButton.setBounds(16, 250, 68, 29);
 			contentPanel.add(btnNewButton);
@@ -152,23 +220,26 @@ public class ArrivalMain extends JDialog {
 				public void actionPerformed(ActionEvent e) {
 					for(int i=0; i<list.order.size(); i++){
 						if(list.order.get(i).getNumber() == (Integer.parseInt(textField.getText()))){
-							Ticket ticket = new Ticket();
-							ticket.setCustomer(list.order.get(i).getCustomer());
-							ticket.setDrink(list.order.get(i).getDrink());
-							ticket.setNumber(list.order.get(i).getNumber());
-							ticketList.ticket.add(ticket);
+							int number = list.order.get(i).getNumber();
+							Customer customer = list.order.get(i).getCustomer();
+							Drink drink = list.order.get(i).getDrink();
 							list.order.remove(i);
+							Ticket ticket = createTicket(number ,customer, drink);
+							decreaseStock(drink);
+							writeStock();
+							ticketList.ticket.add(ticket);
+							writeTicketList();
 							i--;
 						}
 					}
 					System.out.println(list.order.size());
-					
+
 					contentPanel.setVisible(false);
 					createPanel(3);
 				}
 			});
 			JButton btn2 = new JButton("cancel");
-			btn2.setBounds(80, 250, 68, 29);
+			btn2.setBounds(100, 250, 100, 29);
 			contentPanel.add(btn2);
 			btn2.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -194,7 +265,7 @@ public class ArrivalMain extends JDialog {
 			JLabel lblNewLabel_1 = new JLabel("注文番号:" + textField.getText());
 			lblNewLabel_1.setBounds(10, 60, 450, 16);
 			contentPanel.add(lblNewLabel_1);
-			
+
 			int count=0;
 			for(int i=0; i<list.order.size(); i++){
 				if(list.order.get(i).getNumber() == (Integer.parseInt(textField.getText()))){
@@ -210,7 +281,7 @@ public class ArrivalMain extends JDialog {
 					count++;
 				}
 			}
-			
+
 			JButton btnNewButton = new JButton("OK");
 			btnNewButton.setBounds(16, 250, 68, 29);
 			contentPanel.add(btnNewButton);
@@ -237,9 +308,9 @@ public class ArrivalMain extends JDialog {
 			JLabel lblNewLabel_1 = new JLabel("注文番号:" + textField.getText());
 			lblNewLabel_1.setBounds(10, 60, 450, 16);
 			contentPanel.add(lblNewLabel_1);
-			
+
 			JButton btnNewButton = new JButton("OK");
-			btnNewButton.setBounds(16, 100, 50, 29);
+			btnNewButton.setBounds(16, 100, 68, 29);
 			contentPanel.add(btnNewButton);
 			btnNewButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -253,4 +324,99 @@ public class ArrivalMain extends JDialog {
 		}
 	}
 
+	public Ticket createTicket(int number, Customer customer, Drink drink){
+		Ticket ticket = new Ticket();
+		ticket.setNumber(number);
+		ticket.setCustomer(customer);
+		ticket.setDrink(drink);
+
+		return ticket;
+	}
+
+	public void decreaseStock(Drink drink){
+		ArrayList<Drink> list = s.getStock();
+		for(int i=0; i<list.size(); i++){
+			if(drink.getBrand().equals(list.get(i).getBrand())){
+				Drink newDrink = new Drink();
+				newDrink.setBrand(drink.getBrand());
+				newDrink.setNum(list.get(i).getNum() - drink.getNum());
+				list.remove(i);
+				list.add(i, newDrink);
+				s.setStock(list);
+			}
+		}
+	}
+
+	public void writeStock(){
+		try{
+	    	if(!file.exists()){
+	    		file.createNewFile();
+	    	}
+	/*
+	    	Drink d = new Drink();
+	    	d.setBrand("asahi");
+	    	d.setNum(10);
+	    	s.setStock(d);
+	*/
+
+	    	BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+	    	ArrayList<Drink> list = s.getStock();
+
+	    	for(int i=0; i<list.size(); i++){
+	    		String tmp;
+	    		tmp = list.get(i).getBrand() + "," + list.get(i).getNum();
+	    		bw.write(tmp);
+	    		bw.newLine();
+	    	}
+
+	    	bw.close();
+
+
+	    }catch(FileNotFoundException e){
+	        System.out.println("ファイルが存在しません.");
+	      }catch(IOException e){
+	        System.out.println("ファイルに書き込めませんでした.");
+	      }
+	}
+
+	public void writeTicketList(){
+		 try{
+		    	if(!tlFile.exists()){
+		    		tlFile.createNewFile();
+		    	}
+		/*
+		    	Customer c = new Customer();
+		    	c.setName("藤崎");
+		    	Drink d = new Drink();
+		    	d.setBrand("mio");
+		    	d.setNum(5);
+
+		    	Ticket t = new Ticket();
+		    	t.setNumber(1);
+		    	t.setCustomer(c);
+		    	t.setDrink(d);
+
+		    	tl.ticket.add(t);
+		*/
+
+		    	BufferedWriter bw2 = new BufferedWriter(new FileWriter(tlFile));
+		    	List<Ticket> tl = ticketList.ticket;
+
+		    	for(int i=0; i<tl.size(); i++){
+		    		String tmp;
+		    		tmp = tl.get(i).getNumber() + "," + tl.get(i).getCustomer().getName() + "," + tl.get(i).getDrink().getBrand() + "," + tl.get(i).getDrink().getNum();
+		    		bw2.write(tmp);
+		    		bw2.newLine();
+		    	}
+
+		    	bw2.close();
+
+
+		    }catch(FileNotFoundException e){
+		        System.out.println("ファイルが存在しません.");
+		      }catch(IOException e){
+		        System.out.println("ファイルに書き込めませんでした.");
+		      }
+
+	}
 }

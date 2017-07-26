@@ -49,14 +49,16 @@ public class OrderMain extends JDialog {
 		      String str;
 
 		      String zaiko[];
+		      ArrayList<Drink> stock = new ArrayList<Drink>();
 
 		      while( (str = br.readLine()) != null ) {
 		    	  zaiko = str.split(",");
 		    	  Drink d = new Drink();
 		    	  d.setBrand(zaiko[0]);
 		    	  d.setNum(Integer.parseInt(zaiko[1]));
-		    	  s.setStock(d);
+		    	  stock.add(d);
 		      }
+		      s.setStock(stock);
 
 		      br.close();
 		    }catch(FileNotFoundException e){

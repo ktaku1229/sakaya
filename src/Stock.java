@@ -8,7 +8,7 @@ public class Stock {
 		return stock;
 	}
 
-	public void setStock(Drink drink) {
-		this.stock.add(drink);
+	public void setStock(ArrayList<Drink> stock) {
+		this.stock = stock;
 	}
 }
