@@ -1,2 +1,5 @@
 1,藤崎,asahi,10
 1,藤崎,mio,5
+2,aaa,asahi,10
+1,aaa,mio,10
+1,aaa,asahi,5
