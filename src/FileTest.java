@@ -14,6 +14,8 @@ class FileTest{
 	static File file = new File("src/zaiko.txt");
 	static TicketList tl = new TicketList();
 	static File tlFile = new File("src/ticket.txt");
+	static OrderList list = new OrderList();
+	static File orderFile = new File("src/order.txt");
 
   public static void main(String args[]){
     try{
@@ -131,6 +133,58 @@ class FileTest{
 
     	bw2.close();
 
+
+    }catch(FileNotFoundException e){
+        System.out.println("ファイルが存在しません.");
+      }catch(IOException e){
+        System.out.println("ファイルに書き込めませんでした.");
+      }
+
+    try{
+        BufferedReader br = new BufferedReader( new FileReader(orderFile) );
+        String str;
+
+        String tmp[];
+
+        while( (str = br.readLine()) != null ) {
+      	  tmp = str.split(",");
+      	  Order order = new Order();
+      	  order.setNumber(Integer.parseInt(tmp[0]));
+      	  Customer customer = new Customer();
+      	  customer.setName(tmp[1]);
+      	  order.setCustomer(customer);
+      	  Drink d = new Drink();
+      	  d.setBrand(tmp[2]);
+      	  d.setNum(Integer.parseInt(tmp[3]));
+      	  order.setDrink(d);
+      	  list.order.add(order);
+        }
+
+        br.close();
+      }catch(FileNotFoundException e){
+        System.out.println("ファイルが存在しません.");
+      }catch(IOException e){
+        System.out.println("ファイルを読み込めませんでした.");
+      }catch(NumberFormatException e){
+      	System.out.println("ファイルの形式が正しくありません.");
+      }
+
+    try{
+    	if(!orderFile.exists()){
+    		orderFile.createNewFile();
+    	}
+
+    	BufferedWriter bw2 = new BufferedWriter(new FileWriter(orderFile));
+    	List<Order> orderList = list.order;
+
+    	for(int i=0; i<orderList.size(); i++){
+    		String tmp;
+    		tmp = orderList.get(i).getNumber() + "," + orderList.get(i).getCustomer().getName() + "," + orderList.get(i).getDrink().getBrand() + "," + orderList.get(i).getDrink().getNum();
+    		bw2.write(tmp);
+    		bw2.newLine();
+    	}
+
+    	bw2.close();
 
     }catch(FileNotFoundException e){
         System.out.println("ファイルが存在しません.");

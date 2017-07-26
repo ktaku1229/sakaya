@@ -12,8 +12,11 @@ import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +27,7 @@ public class OrderMain extends JDialog {
 	private JTextField textField;
 	private JTextField textField2;
 
-	OrderList list = new OrderList();
+	static OrderList list = new OrderList();
 
 	private static String name;
 	private static ArrayList<String> brand = new ArrayList<String>();
@@ -37,6 +40,8 @@ public class OrderMain extends JDialog {
 	static OrderMain error = new OrderMain(3);
 	static OrderMain dialog3 = new OrderMain(4);
 	static OrderMain dialog7 = new OrderMain(7);
+
+	static File orderFile = new File("src/order.txt");
 
 	/**
 	 * Launch the application.
@@ -69,13 +74,45 @@ public class OrderMain extends JDialog {
 		    	System.out.println("ファイルの形式が正しくありません.");
 		    }
 
+	    try{
+	        BufferedReader br = new BufferedReader( new FileReader(orderFile) );
+	        String str;
+
+	        String tmp[];
+
+	        while( (str = br.readLine()) != null ) {
+	      	  tmp = str.split(",");
+	      	  Order order = new Order();
+	      	  order.setNumber(Integer.parseInt(tmp[0]));
+	      	  Customer customer = new Customer();
+	      	  customer.setName(tmp[1]);
+	      	  order.setCustomer(customer);
+	      	  Drink d = new Drink();
+	      	  d.setBrand(tmp[2]);
+	      	  d.setNum(Integer.parseInt(tmp[3]));
+	      	  order.setDrink(d);
+	      	  list.order.add(order);
+	        }
+
+	        br.close();
+	      }catch(FileNotFoundException e){
+	        System.out.println("ファイルが存在しません.");
+	      }catch(IOException e){
+	        System.out.println("ファイルを読み込めませんでした.");
+	      }catch(NumberFormatException e){
+	      	System.out.println("ファイルの形式が正しくありません.");
+	      }
+
 		try {
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
 	}
+
+
 
 	/**
 	 * Create the dialog.
@@ -347,6 +384,7 @@ public class OrderMain extends JDialog {
 							order.setNumber(number);
 							list.order.add(order);
 						}
+						writeOrderList();
 						contentPanel.setVisible(false);
 						createPanel(6);
 					}
@@ -407,6 +445,31 @@ public class OrderMain extends JDialog {
 			contentPanel.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			contentPanel.setVisible(true);
 		}
+	}
+
+	public void writeOrderList(){
+		try{
+	    	if(!orderFile.exists()){
+	    		orderFile.createNewFile();
+	    	}
+
+	    	BufferedWriter bw2 = new BufferedWriter(new FileWriter(orderFile));
+	    	List<Order> orderList = list.order;
+
+	    	for(int i=0; i<orderList.size(); i++){
+	    		String tmp;
+	    		tmp = orderList.get(i).getNumber() + "," + orderList.get(i).getCustomer().getName() + "," + orderList.get(i).getDrink().getBrand() + "," + orderList.get(i).getDrink().getNum();
+	    		bw2.write(tmp);
+	    		bw2.newLine();
+	    	}
+
+	    	bw2.close();
+
+	    }catch(FileNotFoundException e){
+	        System.out.println("ファイルが存在しません.");
+	      }catch(IOException e){
+	        System.out.println("ファイルに書き込めませんでした.");
+	      }
 	}
 
 }
