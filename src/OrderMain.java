@@ -50,7 +50,7 @@ public class OrderMain extends JDialog {
 
 
 		try{
-		      BufferedReader br = new BufferedReader( new FileReader("src/zaiko.txt") );
+		      BufferedReader br = new BufferedReader( new FileReader("src/sakayasystem/zaiko.txt") );
 		      String str;
 
 		      String zaiko[];

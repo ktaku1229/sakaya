@@ -6,3 +6,8 @@
 2,aaa,asahi,5
 1,qqq,mio,10
 1,qqq,asahi,5
+6,aaa,super,2
+3,aaa,mio,5
+5,aaa,aaa,4
+4,aaa,aaa,1
+1,aaa,aaa,2
