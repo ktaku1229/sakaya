@@ -6,6 +6,10 @@
 //import javafx.stage.Stage;
 
 import javax.swing.*;
+
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,7 +20,34 @@ public class DisplayLists {
     }
 
     public static void main(String[] args) {
-        DisplayStock();
+    	JDialog dialog = new JDialog();
+    	dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		dialog.setVisible(true);
+
+		dialog.setBounds(100, 100, 450, 300);
+		dialog.setLayout(null);
+
+		JButton btnNewButton = new JButton("在庫表示");
+		btnNewButton.setBounds(10, 93, 150, 29);
+		dialog.add(btnNewButton);
+		btnNewButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dialog.setVisible(false);
+				DisplayStock();
+			}
+		});
+
+		JButton btn2 = new JButton("出荷実績表示");
+		btn2.setBounds(200, 93, 150, 29);
+		dialog.add(btn2);
+		btn2.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dialog.setVisible(false);
+				DisplayTicketList();
+			}
+		});
     }
 
     public static void DisplayStock()
