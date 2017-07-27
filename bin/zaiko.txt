@@ -1,2 +1,6 @@
-mio,10
-asahi,10
+aaa,20
+vodka,12
+tequila,15
+asahi super dry,22
+gimlet,30
+kirin,30

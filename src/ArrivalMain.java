@@ -390,9 +390,9 @@ public class ArrivalMain extends JDialog {
 
 	    	for(int i=0; i<list.size(); i++){
 	    		String tmp;
-	    		tmp = list.get(i).getBrand() + "," + list.get(i).getNum();
+	    		tmp = list.get(i).getBrand() + "," + list.get(i).getNum() + "\n";
 	    		bw.write(tmp);
-	    		bw.newLine();
+	    		//bw.newLine();
 	    	}
 
 	    	bw.close();
