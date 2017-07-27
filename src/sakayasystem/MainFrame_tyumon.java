@@ -57,8 +57,10 @@ public class MainFrame_tyumon extends JFrame{
     		    	a="";
     		    }
     		    else if((char)ch == '\n'){
-    		    	zaiko_num.add(a);
-    		    	a="";
+    		    	if(!a.equals("")){
+    		    		zaiko_num.add(a);
+    		    		a="";
+    		    	}
     		    }
     		    else{
         			a+=(char)ch;
@@ -71,8 +73,11 @@ public class MainFrame_tyumon extends JFrame{
     		}catch(IOException e){
     		  System.out.println(e);
     		}
-
-    	zaiko_num.add(a);
+    	if(!a.equals("")){
+    		zaiko_num.add(a);
+    	}
+    	System.out.println(zaiko_name.size());
+    	System.out.println(zaiko_num.size());
     	// デバック
     	System.out.println("ファイルから読み取ったデータは:");
     	  for(int i = 0, l = zaiko_num.size();i<l; i++){

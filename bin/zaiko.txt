@@ -2,5 +2,5 @@ aaa,20
 vodka,12
 tequila,15
 asahi super dry,22
-gimlet,24
-kirin,20
+gimlet,30
+kirin,30
